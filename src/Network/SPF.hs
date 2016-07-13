@@ -22,16 +22,17 @@ lookupSpf1 domain resolver = fmap filterSpf1 <$> lookupTXT resolver domain
   where filterSpf1 = filter (spf1Start `BS.isPrefixOf`)
 
 
-foo domain = do spf1s <- forceEither <$> withDefaultResolver (lookupSpf1 domain)
-                -- each spf1s -- for debugging
-                let parsed = map parseOnlySpf spf1s
-                    parsed' = map forceEither parsed
-                    includes = concat . map (view include) $ parsed'
-                    ip4s = concat . map (view ip4) $ parsed'
-                    redirects = catMaybes . map (view redirect) $ parsed'
-                each ip4s
-                for (each includes) foo
-                for (each redirects) foo
+produceSpfIps :: MonadIO m => Domain -> Producer BS.ByteString m ()
+produceSpfIps domain = do spf1s <- forceEither <$> withDefaultResolver (lookupSpf1 domain)
+                          -- each spf1s -- for debugging
+                          let parsed = map parseOnlySpf spf1s
+                              parsed' = map forceEither parsed
+                              includes = concat . map (view include) $ parsed'
+                              ip4s = concat . map (view ip4) $ parsed'
+                              redirects = catMaybes . map (view redirect) $ parsed'
+                          each ip4s
+                          for (each includes) produceSpfIps
+                          for (each redirects) produceSpfIps
 
 
 
