@@ -7,6 +7,7 @@ import Test.Tasty.HUnit
 import Data.ByteString (empty)
 import Data.ByteString.Char8 (pack)
 import Data.Attoparsec.ByteString
+import Control.Lens (set)
 
 import Data.SPF
 import Parser.SPF
@@ -14,8 +15,8 @@ import Parser.SPF
 tests = $(testGroupGenerator)
 
 testParser parser str exp = case parseOnly parser packedStr of
-                              Right result -> result @=? exp 
-                              x -> assertFailure $ "Expected Left got: " ++ show x
+                              Right result -> result @?= exp 
+                              x -> assertFailure $ "Expected Right got: " ++ show x
   where packedStr = pack str
 
 case_spf_version = testParser (pSpf1Start <* endOfInput) "v=spf1" defaultSpf1Data
@@ -35,7 +36,8 @@ case_whole_spf_data = testParser (pSpf) src expected
                       , "include:_spf-ssg-c.microsoft.com ~all"
                       ]
         expected = SpfData 
-                     1 
+                     1
+                     Nothing
                      (map pack [ "_spf-ssg-c.microsoft.com"
                                , "_spf-ssg-b.microsoft.com"
                                , "spf-a.hotmail.com"
@@ -43,4 +45,13 @@ case_whole_spf_data = testParser (pSpf) src expected
                                , "spf-b.outlook.com"
                                , "spf-a.outlook.com"
                                ])
-                     (map pack [ "157.55.9.128/25" ])
+                     [pack "157.55.9.128/25" ]
+                     []
+
+case_spf_data_w_ip6 = testParser (pSpf) src expected
+  where src = "v=spf1 ip6:2a01:111:f400::/48 ip4:23.103.128.0/19"
+        expected = SpfData 1 Nothing [] [pack "23.103.128.0/19"] [pack "2a01:111:f400::/48"]
+
+case_spf_data_w_redirect = testParser (pSpf) src expected
+  where src = "v=spf1 redirect=_spf.google.com"
+        expected = set redirect (Just . pack $ "_spf.google.com") defaultSpf1Data

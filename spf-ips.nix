@@ -17,6 +17,7 @@
 , temporary
 , dns
 , lens
+, MissingH
 }:
 mkDerivation {
   pname = "admin-lib";
@@ -35,6 +36,7 @@ mkDerivation {
     unix
     dns
     lens
+    MissingH
   ];
   testHaskellDepends = [
     tasty
