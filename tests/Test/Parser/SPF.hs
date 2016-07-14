@@ -26,12 +26,12 @@ case_whole_spf_data = testParser (pSpf) src expected
         expected = SpfData 
                      1
                      Nothing
-                     (map pack [ "_spf-ssg-c.microsoft.com"
-                               , "_spf-ssg-b.microsoft.com"
-                               , "spf-a.hotmail.com"
-                               , "spf.protection.outlook.com"
+                     (map pack [ "spf-a.outlook.com"
                                , "spf-b.outlook.com"
-                               , "spf-a.outlook.com"
+                               , "spf.protection.outlook.com"
+                               , "spf-a.hotmail.com"
+                               , "_spf-ssg-b.microsoft.com"
+                               , "_spf-ssg-c.microsoft.com"
                                ])
                      [pack "157.55.9.128/25" ]
                      []
