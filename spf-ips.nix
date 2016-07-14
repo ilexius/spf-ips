@@ -3,49 +3,37 @@
 , attoparsec
 , base
 , bytestring
-, directory
-, filepath
+, dns
+, lens
+, MissingH
 , transformers
 , optparse-applicative
 , pipes
 , pipes-bytestring
-, pipes-safe
-, unix
 , tasty
 , tasty-hunit
-, tasty-quickcheck
 , tasty-th
-, temporary
-, dns
-, lens
-, MissingH
 }:
 mkDerivation {
-  pname = "admin-lib";
+  pname = "spf-ips";
   version = "0.1.0.0";
   src = ./.;
   libraryHaskellDepends = [
     attoparsec
     base
     bytestring
-    directory
-    filepath
-    optparse-applicative
-    pipes
-    pipes-bytestring
-    pipes-safe
-    transformers
-    unix
     dns
     lens
     MissingH
+    optparse-applicative
+    pipes
+    pipes-bytestring
+    transformers
   ];
   testHaskellDepends = [
     tasty
     tasty-hunit
-    tasty-quickcheck
     tasty-th
-    temporary
   ];
   description = "";
   license = "";
