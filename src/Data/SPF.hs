@@ -1,7 +1,16 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Data.SPF where -- (SpfData(..), defaultSpf1Data, spf1Start) where
+module Data.SPF
+  ( SpfData(..)
+  , version
+  , redirect
+  , include
+  , ip4
+  , ip6
+  , defaultSpf1Data
+  , spf1Start
+  ) where
 
-import Control.Lens
+import Control.Lens (makeLenses)
 import Data.ByteString.Char8 (ByteString, pack)
 
 data SpfData = SpfData { _version  :: Int
