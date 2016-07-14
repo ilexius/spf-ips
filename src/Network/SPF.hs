@@ -8,7 +8,7 @@ import Data.ByteString (ByteString, isPrefixOf)
 import Data.ByteString.Char8 (pack)
 import Data.Either (lefts)
 import Data.Either.Utils (forceEither)
-import Data.Maybe (catMaybes)
+import Data.Maybe (mapMaybe)
 import Network.DNS 
 import Pipes
 
@@ -35,6 +35,6 @@ produceSpfIps domain =
      each ip4s
      for (each includes) produceSpfIps
      for (each redirects) produceSpfIps
-  where getAllIncludes = concat . map (view include)
-        getAllIp4s = concat . map (view ip4)
-        getAllRedirects = catMaybes . map (view redirect)
+  where getAllIncludes = concatMap (view include)
+        getAllIp4s = concatMap (view ip4)
+        getAllRedirects = mapMaybe (view redirect)
