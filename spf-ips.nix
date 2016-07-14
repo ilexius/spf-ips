@@ -8,6 +8,7 @@
 , transformers
 , optparse-applicative
 , pipes
+, pipes-bytestring
 , pipes-safe
 , unix
 , tasty
@@ -31,6 +32,7 @@ mkDerivation {
     filepath
     optparse-applicative
     pipes
+    pipes-bytestring
     pipes-safe
     transformers
     unix
