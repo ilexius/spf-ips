@@ -17,11 +17,7 @@ pSpf :: Parser SpfData
 pSpf = do spf <- pSpf1Start
           P.char ' '
           bodies <- appBody
-          return (map' bodies spf)
-
-map' :: [a -> a] -> a -> a
-map' [] x = x
-map' (f:fs) x = map' fs (f x)
+          return (foldr ($) spf bodies)
 
 pSpf1Start :: Parser SpfData
 pSpf1Start = const defaultSpf1Data <$> P.string spf1Start
