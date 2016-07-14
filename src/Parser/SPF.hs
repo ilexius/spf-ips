@@ -17,16 +17,23 @@ pSpf :: Parser SpfData
 pSpf = do spf <- pSpf1Start
           P.char ' '
           bodies <- appBody
-          return $ map' bodies spf
+          return (map' bodies spf)
 
 map' :: [a -> a] -> a -> a
 map' [] x = x
 map' (f:fs) x = map' fs (f x)
 
+pSpf1Start :: Parser SpfData
 pSpf1Start = const defaultSpf1Data <$> P.string spf1Start
 
-appBody = P.sepBy1 appIncludeOrIp4 (P.char ' ')
-appIncludeOrIp4 = P.choice [appRedirect, appInclude, appIp4, appIp6]
+appBody :: Parser [SpfData -> SpfData]
+appBody = P.sepBy1 appMechanisms (P.char ' ')
+
+-- The following parsers result in functions (SpfData -> SpfData)
+-- which manipulate a SpfData instance. appMechanisms :: Parser (SpfData -> SpfData)
+appMechanisms = P.choice mechanisms
+  where mechanisms = [appRedirect, appInclude, appIp4, appIp6]
+
 appRedirect = set redirect . Just <$> pRedirect
 appInclude = (\r -> over include (r:)) <$> pInclude
 appIp4 = (\r -> over ip4 (r:)) <$> pIp4
