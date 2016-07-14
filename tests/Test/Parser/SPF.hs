@@ -37,8 +37,8 @@ case_whole_spf_data = testParser pSpf src expected
                      []
 
 case_spf_data_w_ip6 = testParser pSpf src expected
-  where src = "v=spf1 ip6:2a01:111:f400::/48 ip4:23.103.128.0/19"
-        expected = SpfData 1 Nothing [] [pack "23.103.128.0/19"] [pack "2a01:111:f400::/48"]
+  where src = "v=spf1 ip6:2a01:111:f400::/48"
+        expected = set ip6 [pack "2a01:111:f400::/48"] defaultSpf1Data
 
 case_spf_data_w_redirect = testParser pSpf src expected
   where src = "v=spf1 redirect=_spf.google.com"
