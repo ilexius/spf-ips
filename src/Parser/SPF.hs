@@ -1,14 +1,19 @@
-module Parser.SPF where
+module Parser.SPF
+  ( parseOnlySpf
+  , pSpf
+  ) where
 
-import Control.Lens
-import Data.ByteString.Char8 (pack)
+import Control.Lens (over, set)
+import Data.ByteString.Char8 (ByteString, pack)
 import qualified Data.Attoparsec.ByteString.Char8 as P
+import Data.Attoparsec.ByteString.Char8 (Parser)
 
 import Data.SPF
 
+parseOnlySpf :: ByteString -> Either String SpfData
 parseOnlySpf = P.parseOnly pSpf
 
-pSpf :: P.Parser SpfData
+pSpf :: Parser SpfData
 pSpf = do spf <- pSpf1Start
           P.char ' '
           bodies <- appBody
